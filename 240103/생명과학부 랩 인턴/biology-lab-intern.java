@@ -4,6 +4,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.StringTokenizer;
 
@@ -15,7 +16,7 @@ public class Main {
 	static Queue<Point>[][] board;
 	static int[] dx = {0,-1,1,0,0};
 	static int[] dy = {0,0,0,1,-1};
-	static class Point{
+	static class Point implements Comparable<Point>{
 		int idx;
 		int x,y;
 		int s,d,b;
@@ -26,6 +27,10 @@ public class Main {
 			this.s = s;
 			this.d = d;
 			this.b = b;
+		}
+		
+		public int compareTo(Point o) {
+			return o.b - this.b;
 		}
 	}
 
@@ -81,6 +86,8 @@ public class Main {
 		if(moldMap.size() == 0) return;
 		
 		ArrayList<Integer> removeList = new ArrayList<>();
+		Queue<int[]> q = new LinkedList<>();
+		boolean[][] visited = new boolean[N][M];
 		
 		for(int i : moldMap.keySet()) {
 			Point temp = moldMap.get(i);
@@ -91,39 +98,51 @@ public class Main {
 			// 이동 전 board에서 현재 곰팡이 위치 지우기
 			board[temp.x][temp.y].clear();
 			
-			int nx = temp.x;
-			int ny = temp.y;
-			int d = temp.d;
+//			int nx = temp.x;
+//			int ny = temp.y;
+//			int d = temp.d;
 			for(int s=0;s<temp.s;s++) {
 				// 주어진 방향과 속력으로 이동하며 
+				int nx = temp.x + dx[temp.d];
+				int ny = temp.y + dy[temp.d];
 				
 				// 격자판의 벽에 도달하면 반대로 방향을 바꾸고 속력을 유지한 채로 이동합니다.
-				if(!is_valid(nx+dx[d], ny+dy[d])) {
-					d = change_dir(d);
+				if(!is_valid(nx, ny)) {
+					temp.d = change_dir(temp.d);
 				}
 				
-				nx += dx[d];
-				ny += dy[d];
+				temp.x += dx[temp.d];
+				temp.y += dy[temp.d];
 			}
 			
 			// 이동 완료 후, moldMap의 현재 곰팡이 정보 업데이트하기
-			temp.x = nx;
-			temp.y = ny;
-			temp.d = d;
+//			temp.x = nx;
+//			temp.y = ny;
+//			temp.d = d;
 			
 			// 이동하려는 칸에 다른 곰팡이가 있는 경우
-			if(!board[nx][ny].isEmpty()) {
-				if(temp.b > board[nx][ny].peek().b) {
-					board[nx][ny].clear();
-					board[nx][ny].add(new Point(i, nx, ny, temp.s, d, temp.b));
+			board[temp.x][temp.y].add(new Point(i, temp.x, temp.y, temp.s, temp.d, temp.b));
+		}
+		
+		for(int i : moldMap.keySet()) {
+			Point temp = moldMap.get(i);
+			
+			if(visited[temp.x][temp.y]) continue;
+			
+			if(board[temp.x][temp.y].size() >= 2) {
+				PriorityQueue<Point> pq = new PriorityQueue<>();
+				
+				while(!board[temp.x][temp.y].isEmpty()) {
+					pq.add(board[temp.x][temp.y].poll());
 				}
-				if(temp.b < board[nx][ny].peek().b) {
-					removeList.add(i);
-//					moldMap.remove(i);
+				
+				Point survive = pq.poll();
+				
+				while(!pq.isEmpty()) {
+					removeList.add(pq.poll().idx);
 				}
-			}
-			else {
-				board[nx][ny].add(new Point(i, nx, ny, temp.s, d, temp.b));
+				
+				board[temp.x][temp.y].add(survive);
 			}
 		}
 		
@@ -137,8 +156,7 @@ public class Main {
 		// 곰팡이를 채취하고 나면 해당 칸은 빈칸이 되며, 해당 열에서 채취할 수 있는 곰팡이가 없는 경우도 있을 수 있음에 유의합니다.
 		
 		for(int x=0;x<N;x++) {
-			if(board[x][sy].isEmpty()) continue;
-			else {
+			if(!board[x][sy].isEmpty()) {
 				Point target = board[x][sy].poll();
 				result += target.b;
 				moldMap.remove(target.idx);
