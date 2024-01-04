@@ -59,7 +59,7 @@ public class Main {
 				break;
 			}
 			
-			if(0<R && R<rSize && 0<C && C<cSize) {
+			if(0<=R && R<rSize && 0<=C && C<cSize) {
 				if(board[R][C] == K) {
 					break;
 				}
