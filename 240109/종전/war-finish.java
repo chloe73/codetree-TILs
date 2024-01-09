@@ -38,8 +38,8 @@ public class Main {
 		// 직사각형 기준점
 		for(int x=1;x<N-1;x++) {
 			for(int y=0;y<N-2;y++) {
-				for(int width=1;width<=N/2;width++) {
-					for(int height=1;height<=N/2;height++) {
+				for(int width=1;width<N;width++) {
+					for(int height=1;height<N;height++) {
 						int ax = x; int ay = y;
 						int bx = x-width; int by = y+width;
 						int cx = bx+height; int cy = by+height;
