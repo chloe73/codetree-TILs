@@ -38,6 +38,13 @@ public class Main {
 			solve(x,d,k);
 		}
 		
+//		sum = 0;
+//		for(int i=1;i<=N;i++) {
+//			for(int j=0;j<M;j++) {
+//				if(board[i][j] > 0) sum += board[i][j];
+//			}
+//		}
+		
 		// 게임판에 남아있는 수의 총합
 		System.out.println(sum);
 	}
@@ -80,6 +87,17 @@ public class Main {
 				}
 			}
 		}
+		
+		sum = 0;
+		count = 0;
+		for(int i=1;i<=N;i++) {
+			for(int j=0;j<M;j++) {
+				if(board[i][j] > 0) {
+					sum += board[i][j];
+					count++;
+				}
+			}
+		}
 	}
 
 	private static boolean remove_number() {
@@ -88,10 +106,13 @@ public class Main {
 		int[] dx = {-1,1,0,0};
 		int[] dy = {0,0,-1,1};
 		int[][] arr = copy(board);
+		boolean[][] visited = new boolean[N+1][M];
 		
 		for(int i=1;i<=N;i++) {
 			for(int j=0;j<M;j++) {
 				int temp = board[i][j];
+				
+				if(temp == 0) continue;
 				
 				for(int d=0;d<4;d++) {
 					int nx = i + dx[d];
@@ -99,24 +120,27 @@ public class Main {
 					
 					if(nx<1 || nx>N) continue;
 					
-					if(0<=ny && ny<M && board[nx][ny] == temp) {
+					if(0<=ny && ny<M && board[nx][ny] == temp && !visited[nx][ny]) {
 						flag = true;
 						arr[i][j] = 0;
 						arr[nx][ny] = 0;
+						visited[nx][ny] = true;
 						continue;
 					}
 					
-					if(ny == -1 && board[nx][M-1] == temp) {
+					if(ny == -1 && board[nx][M-1] == temp && !visited[nx][M-1]) {
 						flag = true;
 						arr[i][j] = 0;
 						arr[nx][M-1] = 0;
+						visited[nx][M-1] = true;
 						continue;
 					}
 					
-					if(ny == M && board[nx][0] == temp) {
+					if(ny == M && !visited[nx][0] && board[nx][0] == temp) {
 						flag = true;
 						arr[i][j] = 0;
 						arr[nx][0] = 0;
+						visited[nx][0] = true;
 						continue;
 					}
 				}
