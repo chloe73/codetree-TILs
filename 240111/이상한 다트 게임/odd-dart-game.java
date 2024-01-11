@@ -38,13 +38,6 @@ public class Main {
 			solve(x,d,k);
 		}
 		
-//		sum = 0;
-//		for(int i=1;i<=N;i++) {
-//			for(int j=0;j<M;j++) {
-//				if(board[i][j] > 0) sum += board[i][j];
-//			}
-//		}
-		
 		// 게임판에 남아있는 수의 총합
 		System.out.println(sum);
 	}
@@ -79,27 +72,27 @@ public class Main {
 					if(board[i][j] > 0) {
 						if(board[i][j] > avg) {
 							board[i][j] -= 1;
-							sum -= 1;
+							// sum -= 1;
 						}
 						else if(board[i][j] < avg) {
 							board[i][j] += 1;
-							sum += 1;
+							// sum += 1;
 						}
 					}
 				}
 			}
 		}
 		
-		// sum = 0;
-		// count = 0;
-		// for(int i=1;i<=N;i++) {
-		// 	for(int j=0;j<M;j++) {
-		// 		if(board[i][j] > 0) {
-		// 			sum += board[i][j];
-		// 			count++;
-		// 		}
-		// 	}
-		// }
+		sum = 0;
+		count = 0;
+		for(int i=1;i<=N;i++) {
+			for(int j=0;j<M;j++) {
+				if(board[i][j] > 0) {
+					sum += board[i][j];
+					count++;
+				}
+			}
+		}
 	}
 
 	private static boolean remove_number() {
