@@ -105,6 +105,8 @@ public class Main {
 				}
 			}
 		}
+		
+		
 	}
 
 	private static void check_full_block() {
@@ -222,7 +224,7 @@ public class Main {
 			// yellow 보드에 block 놓기
 			int targetRow = 0;
 			for(int i=0;i<6;i++) {
-				if(yellow[i][y] && yellow[i][y+1]) break;
+				if(yellow[i][y] || yellow[i][y+1]) break;
 				targetRow = i;
 			}
 			yellow[targetRow][y] = true;
