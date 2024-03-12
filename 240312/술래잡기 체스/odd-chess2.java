@@ -38,6 +38,8 @@ public class Main {
 			}
 		} // input end
 		
+		result = 0;
+		
 		solve(0,0,0,board,horseMap,result);
 		
 		System.out.println(result);
@@ -60,7 +62,7 @@ public class Main {
 		td = horseMap.get(num).d;
 		horseMap.remove(num);
 		score += num;
-		board[tx][ty] = -1;
+		board[tx][ty] = 0;
 		
 		if(result < score) result = score;
 
@@ -76,7 +78,7 @@ public class Main {
 				nx = temp.x + dx[nd];
 				ny = temp.y + dy[nd];
 				
-				if(isValid(nx, ny) && board[nx][ny] != -1) {
+				if(isValid(nx, ny) && !(nx == tx && ny == ty)) {
 					flag = true;
 					break;
 				}
