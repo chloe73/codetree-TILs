@@ -185,7 +185,7 @@ public class Main {
 	}
 
 	private static boolean isValid(int r, int c) {
-		if(r<0 || c<0 || r>=4 || c>=4) return false;
+		if(r<0 || c<0 || r>=N || c>=N) return false;
 		return true;
 	}
 }
