@@ -168,13 +168,11 @@ public class Main {
 			}
 		}
 		
-		for(int i=0;i<N;i++) {
-			for(int j=0;j<N;j++) {
-				if(arr[i][j] > 0) {
-					board[i][j][0] = arr[i][j];
-					board[i][j][1] = K;
-				}
-			}
+		for(int i : playerMap.keySet()) {
+			Player p = playerMap.get(i);
+			
+			board[p.x][p.y][0] = i;
+			board[p.x][p.y][1] = K;
 		}
 
 		if(removeList.size() > 0) {
