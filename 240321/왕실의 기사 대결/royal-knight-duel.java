@@ -267,7 +267,7 @@ public class Main {
 			}
 		}
 		
-		if(kMap.get(idx).k - damage < 0) {
+		if(kMap.get(idx).k - damage <= 0) {
 			kMap.get(idx).isAlive = true;
 			kMap.get(idx).k = 0;
 		}
