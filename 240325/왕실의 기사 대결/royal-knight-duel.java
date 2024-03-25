@@ -46,7 +46,10 @@ public class Main {
 		L = Integer.parseInt(st.nextToken());
 		N = Integer.parseInt(st.nextToken());
 		Q = Integer.parseInt(st.nextToken());
-
+		
+//		0이라면 빈칸을 의미합니다.
+//		1이라면 함정을 의미합니다.
+//		2라면 벽을 의미합니다.
 		board = new int[L][L];
 		for(int i=0;i<L;i++) {
 			st = new StringTokenizer(br.readLine());
@@ -97,6 +100,7 @@ public class Main {
 		
 		boolean flag = true;
 		Stack<Integer> s = new Stack<>();
+		boolean[] visited = new boolean[N+1];
 		
 		if(d == 0) {
 			// up
@@ -114,9 +118,12 @@ public class Main {
 				// 다른 기사가 있는 경우
 				if(kBoard[tx][ty+i] > 0) {
 					int num = kBoard[tx][ty+i];
-					Knight next = kMap.get(num);
-					stack.add(new Point(num, next.x, next.y, next.h, next.w));
-					s.add(num);
+					if(!visited[num]) {
+						visited[num] = true;
+						Knight next = kMap.get(num);
+						stack.add(new Point(num, next.x, next.y, next.h, next.w));
+						s.add(num);
+					}
 				}
 			}
 			
@@ -133,9 +140,12 @@ public class Main {
 						// 다른 기사 마주한 경우
 						if(kBoard[tmp.x-1][tmp.y+i] > 0) {
 							int num = kBoard[tmp.x-1][tmp.y+i];
-							Knight next = kMap.get(num);
-							stack.add(new Point(num, next.x, next.y, next.h, next.w));
-							s.add(num);
+							if(!visited[num]) {
+								visited[num] = true;
+								Knight next = kMap.get(num);
+								stack.add(new Point(num, next.x, next.y, next.h, next.w));
+								s.add(num);
+							}
 						}
 					}
 				}
@@ -163,9 +173,12 @@ public class Main {
 				// 다른 기사를 마주한 경우,
 				if(kBoard[tx+i][ty] > 0) {
 					int num = kBoard[tx+i][ty];
-					Knight next = kMap.get(num);
-					stack.add(new Point(num, next.x, next.y, next.h, next.w));
-					s.add(num);
+					if(!visited[num]) {
+						visited[num] = true;
+						Knight next = kMap.get(num);
+						stack.add(new Point(num, next.x, next.y, next.h, next.w));
+						s.add(num);
+					}
 				}
 			}
 			
@@ -182,15 +195,16 @@ public class Main {
 						// 다른 기사 마주한 경우
 						if(kBoard[tmp.x+i][tmp.y+tmp.w] > 0) {
 							int num = kBoard[tmp.x+i][tmp.y+tmp.w];
-							Knight next = kMap.get(num);
-							stack.add(new Point(num, next.x, next.y, next.h, next.w));
-							s.add(num);
+							if(!visited[num]) {
+								visited[num] = true;
+								Knight next = kMap.get(num);
+								stack.add(new Point(num, next.x, next.y, next.h, next.w));
+								s.add(num);
+							}
 						}
 					}
 				}
 			}
-			
-			
 		}
 		else if(d == 2) {
 			// down
@@ -209,9 +223,12 @@ public class Main {
 				// 다른 기사가 있는 경우
 				if(kBoard[tx][ty+i] > 0) {
 					int num = kBoard[tx][ty+i];
-					Knight next = kMap.get(num);
-					stack.add(new Point(num, next.x, next.y, next.h, next.w));
-					s.add(num);
+					if(!visited[num]) {
+						visited[num] = true;
+						Knight next = kMap.get(num);
+						stack.add(new Point(num, next.x, next.y, next.h, next.w));
+						s.add(num);
+					}
 				}
 			}
 			
@@ -228,9 +245,12 @@ public class Main {
 						// 다른 기사 마주한 경우
 						if(kBoard[tmp.x+tmp.h][tmp.y+i] > 0) {
 							int num = kBoard[tmp.x+tmp.h][tmp.y+i];
-							Knight next = kMap.get(num);
-							stack.add(new Point(num, next.x, next.y, next.h, next.w));
-							s.add(num);
+							if(!visited[num]) {
+								visited[num] = true;
+								Knight next = kMap.get(num);
+								stack.add(new Point(num, next.x, next.y, next.h, next.w));
+								s.add(num);
+							}
 						}
 					}
 				}
@@ -257,9 +277,12 @@ public class Main {
 				// 다른 기사를 마주한 경우,
 				if(kBoard[tx+i][ty] > 0) {
 					int num = kBoard[tx+i][ty];
-					Knight next = kMap.get(num);
-					stack.add(new Point(num, next.x, next.y, next.h, next.w));
-					s.add(num);
+					if(!visited[num]) {
+						visited[num] = true;
+						Knight next = kMap.get(num);
+						stack.add(new Point(num, next.x, next.y, next.h, next.w));
+						s.add(num);						
+					}
 				}
 			}
 			
@@ -276,15 +299,24 @@ public class Main {
 						// 다른 기사 마주한 경우
 						if(kBoard[tmp.x+i][tmp.y-1] > 0) {
 							int num = kBoard[tmp.x+i][tmp.y-1];
-							Knight next = kMap.get(num);
-							stack.add(new Point(num, next.x, next.y, next.h, next.w));
-							s.add(num);
+							if(!visited[num]) {
+								visited[num] = true;
+								Knight next = kMap.get(num);
+								stack.add(new Point(num, next.x, next.y, next.h, next.w));
+								s.add(num);
+							}
 						}
 					}
 				}
 			}
 		}
-
+		
+		// 이동 전, 기사들의 현재 위치 복사
+//		int[][] arr = new int[L][L];
+//		for(int i=0;i<L;i++) {
+//			arr[i] = Arrays.copyOf(kBoard[i], L);
+//		}
+		
 		// 기사들 이동 시작
 		while(!s.isEmpty()) {
 			int num = s.pop();
@@ -302,6 +334,7 @@ public class Main {
 			int nx = tmp.x;
 			int ny = tmp.y;
 			for(int i=0;i<tmp.h;i++) {
+//				nx--;
 				for(int j=0;j<tmp.w;j++) {
 					// 이동하려는 칸이 함정인 경우
 					if(board[nx+i-1][ny+j] == 1) cnt++;
@@ -330,6 +363,7 @@ public class Main {
 			int nx = tmp.x + tmp.h -1;
 			int ny = tmp.y;
 			for(int i=0;i<tmp.h;i++) {
+//				nx++;
 				for(int j=0;j<tmp.w;j++) {
 					if(board[nx-i+1][ny+j] == 1) cnt++;
 					kBoard[nx-i+1][ny+j] = num;
@@ -343,6 +377,7 @@ public class Main {
 			int nx = tmp.x;
 			int ny = tmp.y;
 			for(int j=0;j<tmp.w;j++) {
+//				ny--;
 				for(int i=0;i<tmp.h;i++) {
 					if(board[nx+i][ny+j-1] == 1) cnt++;
 					kBoard[nx+i][ny+j-1] = num;
