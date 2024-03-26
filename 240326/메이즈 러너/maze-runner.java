@@ -83,8 +83,8 @@ public class Main {
 //			모든 참가자가 이동을 끝냈으면, 다음 조건에 의해 미로가 회전합니다.
 //			한 명 이상의 참가자와 출구를 포함한 가장 작은 정사각형을 잡습니다.
 //			가장 작은 크기를 갖는 정사각형이 2개 이상이라면, 좌상단 r 좌표가 작은 것이 우선되고, 그래도 같으면 c 좌표가 작은 것이 우선됩니다.
-			int x = 0;
-			int y = 0;
+			int x = ex;
+			int y = ey;
 			int s = 1;
 			outer1:for(int size=1;size<=N;size++) {
 				for(int i=0;i<N-size+1;i++) {
