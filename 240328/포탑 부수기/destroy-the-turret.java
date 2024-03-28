@@ -81,7 +81,9 @@ public class Main {
 		
 		while(K-- > 0) {
 			visited = new boolean[N][M];
-			
+			// 만약 부서지지 않은 포탑이 1개가 된다면 그 즉시 중지됩니다.
+			if(aPq.size() == 1) break;
+
 			// 1. 공격자 선정
 			// 부서지지 않은 포탑 중 가장 약한 포탑이 공격자로 선정됩니다. 
 			Top attacker = aPq.poll();
@@ -115,8 +117,8 @@ public class Main {
 			}
 			attacker.latest = 0;
 			
-			// 만약 부서지지 않은 포탑이 1개가 된다면 그 즉시 중지됩니다.
-			if(aPq.size() == 1) break;
+			// // 만약 부서지지 않은 포탑이 1개가 된다면 그 즉시 중지됩니다.
+			// if(aPq.size() == 1) break;
 		}
 	}
 	
@@ -141,6 +143,8 @@ public class Main {
 			
 			nx = point[0];
 			ny = point[1];
+
+            if(nx == attacker.x && ny == attacker.y) continue;
 			
 			if(board[nx][ny].p > 0) {
 				visited[nx][ny] = true;
