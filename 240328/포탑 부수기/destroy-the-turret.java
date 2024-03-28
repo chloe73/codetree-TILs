@@ -2,7 +2,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.PriorityQueue;
 import java.util.Queue;
@@ -18,24 +17,25 @@ public class Main {
 	static int[] dy = {1,0,-1,0};
 	static PriorityQueue<Top> aPq; // 오름차순
 	static class Top implements Comparable<Top>{
-		int x,y,p,latest;
+		int x,y,p,latest,xySum;
 		
 		public Top(int x, int y, int p, int latest) {
 			this.x = x;
 			this.y = y;
 			this.p = p;
 			this.latest = latest;
+			this.xySum = this.x + this.y;
 		}
 		
 //		가장 약한 포탑은 다음의 기준으로 선정됩니다.
 		public int compareTo(Top o) {
 			if(this.p == o.p) {
 				if(this.latest == o.latest) {
-					if((o.x+o.y) == (this.x+this.y))
+					if(o.xySum == this.xySum)
 //						만약 그러한 포탑이 2개 이상이라면, 각 포탑 위치의 열 값이 가장 큰 포탑이 가장 약한 포탑입니다.
-						return this.y - o.y;
+						return o.y - this.y;
 //					만약 그러한 포탑이 2개 이상이라면, 각 포탑 위치의 행과 열의 합이 가장 큰 포탑이 가장 약한 포탑입니다.
-					return (o.x+o.y) - (this.x+this.y);
+					return o.xySum - this.xySum;
 				}
 //				만약 공격력이 가장 낮은 포탑이 2개 이상이라면, 가장 최근에 공격한 포탑이 가장 약한 포탑입니다. (모든 포탑은 시점 0에 모두 공격한 경험이 있다고 가정하겠습니다.)
 				return this.latest - o.latest;
@@ -82,16 +82,13 @@ public class Main {
 		while(K-- > 0) {
 			visited = new boolean[N][M];
 			
-            // 만약 부서지지 않은 포탑이 1개가 된다면 그 즉시 중지됩니다.
-			if(aPq.size() == 1) break;
-
 			// 1. 공격자 선정
 			// 부서지지 않은 포탑 중 가장 약한 포탑이 공격자로 선정됩니다. 
 			Top attacker = aPq.poll();
 			visited[attacker.x][attacker.y] = true;
 			// 공격자로 선정되면 가장 약한 포탑이므로, 핸디캡이 적용되어 N+M만큼의 공격력이 증가됩니다.
 			attacker.p += (N+M);
-
+			
 			// 2. 공격자의 공격
 			// 위에서 선정된 공격자는 자신을 제외한 가장 강한 포탑을 공격합니다.
 			Top underAttack = null;
@@ -117,15 +114,9 @@ public class Main {
 				}
 			}
 			attacker.latest = 0;
-		}
-	}
-	
-	private static void print() {
-		for(int i=0;i<N;i++) {
-			for(int j=0;j<M;j++) {
-				System.out.print(board[i][j].p+"\t");
-			}
-			System.out.println();
+			
+			// 만약 부서지지 않은 포탑이 1개가 된다면 그 즉시 중지됩니다.
+			if(aPq.size() == 1) break;
 		}
 	}
 	
@@ -177,7 +168,9 @@ public class Main {
 	}
 	
 	private static boolean lazer_attack(Top attacker, Top underAttack) {
-        Queue<Route> q = new LinkedList<>();
+
+		// 최단 경로가 정해졌으면, 공격 대상에는 공격자의 공격력 만큼의 피해를 입히며, 피해를 입은 포탑은 해당 수치만큼 공격력이 줄어듭니다. 또한 공격 대상을 제외한 레이저 경로에 있는 포탑도 공격을 받게 되는데, 이 포탑은 공격자 공격력의 절반 만큼의 공격을 받습니다. (절반이라 함은 공격력을 2로 나눈 몫을 의미합니다.)
+		Queue<Route> q = new LinkedList<>();
 		boolean[][] visit = new boolean[N][M];
 		q.add(new Route(attacker.x, attacker.y, 0));
 		visit[attacker.x][attacker.y] = true;
