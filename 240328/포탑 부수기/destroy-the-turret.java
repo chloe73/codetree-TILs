@@ -16,6 +16,7 @@ public class Main {
 	static int[] dx = {0,1,0,-1};
 	static int[] dy = {1,0,-1,0};
 	static PriorityQueue<Top> aPq; // 오름차순
+//	static PriorityQueue<Top> dPq; // 내림차순
 	static class Top implements Comparable<Top>{
 		int x,y,p,latest,xySum;
 		
@@ -55,6 +56,7 @@ public class Main {
 
 		board = new Top[N][M];
 		aPq = new PriorityQueue<>();
+//		dPq = new PriorityQueue<>(Collections.reverseOrder());
 		
 		for(int i=0;i<N;i++) {
 			st = new StringTokenizer(br.readLine());
@@ -81,9 +83,8 @@ public class Main {
 		
 		while(K-- > 0) {
 			visited = new boolean[N][M];
-			// 만약 부서지지 않은 포탑이 1개가 된다면 그 즉시 중지됩니다.
-			if(aPq.size() == 1) break;
-
+			
+			
 			// 1. 공격자 선정
 			// 부서지지 않은 포탑 중 가장 약한 포탑이 공격자로 선정됩니다. 
 			Top attacker = aPq.poll();
@@ -99,7 +100,7 @@ public class Main {
 			}
 			visited[underAttack.x][underAttack.y] = true;
 			attack(attacker, underAttack);
-			
+
 			// 4. 포탑 정비
 			// 공격과 무관하다는 뜻은 공격자도 아니고, 공격에 피해를 입은 포탑도 아니라는 뜻입니다.
 			aPq.clear();
@@ -117,8 +118,8 @@ public class Main {
 			}
 			attacker.latest = 0;
 			
-			// // 만약 부서지지 않은 포탑이 1개가 된다면 그 즉시 중지됩니다.
-			// if(aPq.size() == 1) break;
+			// 만약 부서지지 않은 포탑이 1개가 된다면 그 즉시 중지됩니다.
+			if(aPq.size() == 1) break;
 		}
 	}
 	
@@ -127,9 +128,16 @@ public class Main {
 		if(!lazer_attack(attacker, underAttack)) {
 			bomb_attack(attacker, underAttack);
 		}
+		
+		// if(!isPossible_lazer_attack(attacker, underAttack))
+		// 	bomb_attack(attacker, underAttack);
 	}
 
 	private static void bomb_attack(Top attacker, Top underAttack) {
+		// 공격 대상에 포탄을 던집니다. 공격 대상은 공격자 공격력 만큼의 피해를 받습니다. 
+		// 추가적으로 주위 8개의 방향에 있는 포탑도 피해를 입는데, 공격자 공격력의 절반 만큼의 피해를 받습니다. 
+		// (절반이라 함은 공격력을 2로 나눈 몫을 의미합니다.) 공격자는 해당 공격에 영향을 받지 않습니다. 
+		// 만약 가장자리에 포탄이 떨어졌다면, 위에서의 레이저 이동처럼 포탄의 추가 피해가 반대편 격자에 미치게 됩니다.
 		int[] ddx = {-1,1,0,0,-1,-1,1,1};
 		int[] ddy = {0,0,-1,1,1,-1,1,-1};
 		
@@ -143,8 +151,8 @@ public class Main {
 			
 			nx = point[0];
 			ny = point[1];
-
-            if(nx == attacker.x && ny == attacker.y) continue;
+			
+			if(nx == attacker.x && ny == attacker.y) continue;
 			
 			if(board[nx][ny].p > 0) {
 				visited[nx][ny] = true;
@@ -162,50 +170,44 @@ public class Main {
 
 	static class Route {
 		int x,y,dist;
-		ArrayList<Integer> dir;
+		String dir;
 		public Route(int x, int y, int dist) {
 			this.x = x;
 			this.y = y;
 			this.dist = dist;
-			this.dir = new ArrayList<>();
+			this.dir = "";
 		}
 	}
 	
 	private static boolean lazer_attack(Top attacker, Top underAttack) {
-
+		// (1) 레이저 공격
+		// 상하좌우의 4개의 방향으로 움직일 수 있습니다.
+		// 부서진 포탑이 있는 위치는 지날 수 없습니다.
+		// 가장자리에서 막힌 방향으로 진행하고자 한다면, 반대편으로 나옵니다. (예를 들어, 위의 예시에서 (2,3)에서 오른쪽으로 두번 이동한다면, (2,3) -> (2,4) -> (2,1) 순으로 이동합니다.)
+		// 레이저 공격은 공격자의 위치에서 공격 대상 포탑까지의 최단 경로로 공격합니다. 만약 그러한 경로가 존재하지 않는다면 (2) 포탄 공격을 진행합니다. 만약 경로의 길이가 똑같은 최단 경로가 2개 이상이라면, 우/하/좌/상의 우선순위대로 먼저 움직인 경로가 선택됩니다.
+		
 		// 최단 경로가 정해졌으면, 공격 대상에는 공격자의 공격력 만큼의 피해를 입히며, 피해를 입은 포탑은 해당 수치만큼 공격력이 줄어듭니다. 또한 공격 대상을 제외한 레이저 경로에 있는 포탑도 공격을 받게 되는데, 이 포탑은 공격자 공격력의 절반 만큼의 공격을 받습니다. (절반이라 함은 공격력을 2로 나눈 몫을 의미합니다.)
 		Queue<Route> q = new LinkedList<>();
 		boolean[][] visit = new boolean[N][M];
 		q.add(new Route(attacker.x, attacker.y, 0));
 		visit[attacker.x][attacker.y] = true;
+		int dist = Integer.MAX_VALUE;
+		boolean flag = false;
+		ArrayList<Integer> routeList = new ArrayList<>();
 		
 		while(!q.isEmpty()) {
 			Route temp = q.poll();
 			
 			if(temp.x == underAttack.x && temp.y == underAttack.y) {
-				int nx = attacker.x;
-				int ny = attacker.y;
-				for(int i=0;i<temp.dir.size();i++) {
-					int d = temp.dir.get(i);
-					nx += dx[d];
-					ny += dy[d];
-					
-					int[] point = checkRange(nx, ny);
-					
-					nx = point[0];
-					ny = point[1];
-					visited[nx][ny] = true;
-					if(nx == underAttack.x && ny == underAttack.y) {
-						board[nx][ny].p -= attacker.p;
+				if(dist > temp.dist) {
+					dist = temp.dist;
+					routeList = new ArrayList<>();
+					for(int i=0;i<temp.dir.length();i++) {
+						routeList.add(temp.dir.charAt(i)-'0');
 					}
-					else {
-						board[nx][ny].p -= attacker.p / 2;						
-					}
-					
-					if(board[nx][ny].p < 0)
-						board[nx][ny].p = 0;
+					flag = true;
+
 				}
-				return true;
 			}
 			
 			for(int d=0;d<4;d++) {
@@ -223,14 +225,41 @@ public class Main {
 				
 				visit[nx][ny] = true;
 				Route next = new Route(nx, ny, temp.dist+1);
-				ArrayList<Integer> list = new ArrayList<>(temp.dir);
-				list.add(d);
-				next.dir = list;
+				next.dir = temp.dir + ""+d;
 				q.add(next);
 			}
 		}
 		
-		return false;
+		if(!flag) return false;
+		
+		if(flag) {
+			int nx = attacker.x;
+			int ny = attacker.y;
+			
+			for(int i=0;i<routeList.size();i++) {
+				int d = routeList.get(i);
+				nx += dx[d];
+				ny += dy[d];
+				
+				int[] point = checkRange(nx, ny);
+				
+				nx = point[0];
+				ny = point[1];
+//				visited[nx][ny] = true;
+				
+				if(nx == underAttack.x && ny == underAttack.y) {
+					board[nx][ny].p -= attacker.p;
+				}
+				else {
+					board[nx][ny].p -= attacker.p / 2;						
+				}
+				
+				if(board[nx][ny].p < 0)
+					board[nx][ny].p = 0;
+			}
+		}
+		
+		return flag;
 	}
 
 	private static int[] checkRange(int r, int c) {
