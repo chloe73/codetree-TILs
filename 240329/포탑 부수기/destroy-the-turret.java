@@ -198,6 +198,35 @@ public class Main {
 				if(distance > temp.dist) {
 					distance = temp.dist;
 					finalRoute = temp.dir;
+					// 최단 경로가 정해졌으면, 공격 대상에는 공격자의 공격력 만큼의 피해를 입히며, 피해를 입은 포탑은 해당 수치만큼 공격력이 줄어듭니다. 또한 공격 대상을 제외한 레이저 경로에 있는 포탑도 공격을 받게 되는데, 이 포탑은 공격자 공격력의 절반 만큼의 공격을 받습니다. (절반이라 함은 공격력을 2로 나눈 몫을 의미합니다.)
+					int nx = attacker.x;
+					int ny = attacker.y;
+					
+					for(int i=0;i<finalRoute.length();i++) {
+						int d = finalRoute.charAt(i)-'0';
+						
+						nx += dx[d];
+						ny += dy[d];
+						
+						int[] pos = checkRange(nx, ny);
+						
+						nx = pos[0];
+						ny = pos[1];
+						
+						visited[nx][ny] = true;
+						
+						if(nx == strongestTop.x && ny == strongestTop.y) {
+							board[nx][ny].p -= attacker.p;
+						}
+						else {
+							board[nx][ny].p -= (attacker.p / 2);
+						}
+						
+						if(board[nx][ny].p <  0) {
+							board[nx][ny].p = 0;
+						}
+					}
+					return true;
 				}
 			}
 			
@@ -222,36 +251,36 @@ public class Main {
 		
 		if(distance == Integer.MAX_VALUE) return false;
 		
-		// 최단 경로가 정해졌으면, 공격 대상에는 공격자의 공격력 만큼의 피해를 입히며, 피해를 입은 포탑은 해당 수치만큼 공격력이 줄어듭니다. 또한 공격 대상을 제외한 레이저 경로에 있는 포탑도 공격을 받게 되는데, 이 포탑은 공격자 공격력의 절반 만큼의 공격을 받습니다. (절반이라 함은 공격력을 2로 나눈 몫을 의미합니다.)
-		int nx = attacker.x;
-		int ny = attacker.y;
+//		// 최단 경로가 정해졌으면, 공격 대상에는 공격자의 공격력 만큼의 피해를 입히며, 피해를 입은 포탑은 해당 수치만큼 공격력이 줄어듭니다. 또한 공격 대상을 제외한 레이저 경로에 있는 포탑도 공격을 받게 되는데, 이 포탑은 공격자 공격력의 절반 만큼의 공격을 받습니다. (절반이라 함은 공격력을 2로 나눈 몫을 의미합니다.)
+//		int nx = attacker.x;
+//		int ny = attacker.y;
+//		
+//		for(int i=0;i<finalRoute.length();i++) {
+//			int d = finalRoute.charAt(i)-'0';
+//			
+//			nx += dx[d];
+//			ny += dy[d];
+//			
+//			int[] pos = checkRange(nx, ny);
+//			
+//			nx = pos[0];
+//			ny = pos[1];
+//			
+//			visited[nx][ny] = true;
+//			
+//			if(nx == strongestTop.x && ny == strongestTop.y) {
+//				board[nx][ny].p -= attacker.p;
+//			}
+//			else {
+//				board[nx][ny].p -= (attacker.p / 2);
+//			}
+//			
+//			if(board[nx][ny].p <  0) {
+//				board[nx][ny].p = 0;
+//			}
+//		}
 		
-		for(int i=0;i<finalRoute.length();i++) {
-			int d = finalRoute.charAt(i)-'0';
-			
-			nx += dx[d];
-			ny += dy[d];
-			
-			int[] pos = checkRange(nx, ny);
-			
-			nx = pos[0];
-			ny = pos[1];
-			
-			visited[nx][ny] = true;
-			
-			if(nx == strongestTop.x && ny == strongestTop.y) {
-				board[nx][ny].p -= attacker.p;
-			}
-			else {
-				board[nx][ny].p -= (attacker.p / 2);
-			}
-			
-			if(board[nx][ny].p <  0) {
-				board[nx][ny].p = 0;
-			}
-		}
-		
-		return true;
+		return false;
 	}
 
 
@@ -260,11 +289,11 @@ public class Main {
 		ret[0] = r;
 		ret[1] = c;
 		
-		// if( (r<0 && c<0) || (r<0 && c>=M) || (r>=N && c<0) || (r>=N && c>=M) ) {
-		// 	ret[0] = -1;
-		// 	ret[1] = -1;
-		// 	return ret;
-		// }
+//		if( (r<0 && c<0) || (r<0 && c>=M) || (r>=N && c<0) || (r>=N && c>=M) ) {
+//			ret[0] = -1;
+//			ret[1] = -1;
+//			return ret;
+//		}
 		
 		if(r == -1) ret[0] = N-1;
 		else if(r == N) ret[0] = 0;
