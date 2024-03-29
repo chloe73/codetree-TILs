@@ -260,11 +260,11 @@ public class Main {
 		ret[0] = r;
 		ret[1] = c;
 		
-		if( (r<0 && c<0) || (r<0 && c>=M) || (r>=N && c<0) || (r>=N && c>=M) ) {
-			ret[0] = -1;
-			ret[1] = -1;
-			return ret;
-		}
+		// if( (r<0 && c<0) || (r<0 && c>=M) || (r>=N && c<0) || (r>=N && c>=M) ) {
+		// 	ret[0] = -1;
+		// 	ret[1] = -1;
+		// 	return ret;
+		// }
 		
 		if(r == -1) ret[0] = N-1;
 		else if(r == N) ret[0] = 0;
