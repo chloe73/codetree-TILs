@@ -111,6 +111,8 @@ public class Main {
 					}
 					if(i == attacker.x && j == attacker.y) {						
 						board[attacker.x][attacker.y].time = 0;
+						pq.add(board[i][j]);
+						continue;
 					}
 					
 					if(board[i][j].p > 0) {
