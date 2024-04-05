@@ -3,6 +3,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.StringTokenizer;
 
 public class Main {
@@ -11,7 +13,7 @@ public class Main {
 	static int tIdx,tx,ty,td; // 술래 위치
 	static boolean tDir;
 	static boolean[][] tree;
-	static int[][] board;
+	static Queue<Integer>[][] board;
 	static int[] dx = {-1,0,1,0};
 	static int[] dy = {0,1,0,-1};
 	static ArrayList<int[]> route;
@@ -34,7 +36,12 @@ public class Main {
 		H = Integer.parseInt(st.nextToken());
 		K = Integer.parseInt(st.nextToken());
 
-		board = new int[N][N];
+		board = new LinkedList[N][N];
+		for(int i=0;i<N;i++) {
+			for(int j=0;j<N;j++) {
+				board[i][j] = new LinkedList<>();
+			}
+		}
 		tree = new boolean[N][N];
 		rMap = new HashMap<>();
 		for(int i=1;i<=M;i++) {
@@ -44,7 +51,7 @@ public class Main {
 			int d = Integer.parseInt(st.nextToken());
 			
 			rMap.put(i, new Runner(x, y, d));
-			board[x][y] = i;
+			board[x][y].add(i);
 		}
 		
 		for(int i=0;i<H;i++) {
@@ -97,6 +104,9 @@ public class Main {
 		tx = temp[0];
 		ty = temp[1];
 		td = temp[2];
+		if(tDir) {
+			td = temp[3];
+		}
 		
 		if(tx == 0 && ty == 0) {
 			tDir = true;
@@ -118,7 +128,13 @@ public class Main {
 			// 하지만 만약 나무가 놓여 있는 칸이라면, 해당 칸에 있는 도망자는 나무에 가려져 보이지 않게 됩니다.
 			if(tree[nx][ny]) continue;
 			
-			if(board[nx][ny] > 0) runner++;
+			if(board[nx][ny].size() > 0) {
+				runner += board[nx][ny].size();
+				while(!board[nx][ny].isEmpty()) {
+					int idx = board[nx][ny].poll();
+					rMap.remove(idx);
+				}
+			}
 		}
 		
 		if(runner > 0) {
@@ -142,21 +158,23 @@ public class Main {
 				y += dy[d];
 				
 				if(x == 0 && y == 0) {
-					route.add(new int[] {0,0,2});
+					route.add(new int[] {0,0,2,2});
 					break outer;
 				}
 				
 				if(i == cnt-1) {
 					if(d == 3) {
-						route.add(new int[] {x,y,0});
+						route.add(new int[] {x,y,0,1});
 					}
 					else {
-						route.add(new int[] {x,y,d+1});
+						
+						route.add(new int[] {x,y,d+1,d+1 == 3 ? 0 : d+2});
 					}
 					continue;
 				}
 				else {
-					route.add(new int[] {x,y,d});					
+					int dir = changeDir(d);
+					route.add(new int[] {x,y,d,dir});					
 				}
 			}
 			
@@ -202,8 +220,8 @@ public class Main {
 			if(nx == tx && ny == ty) continue;
 			
 			// 움직이려는 칸에 술래가 있지 않다면 해당 칸으로 이동합니다. 해당 칸에 나무가 있어도 괜찮습니다.
-			board[temp.x][temp.y] = 0;
-			board[nx][ny] = i;
+			board[temp.x][temp.y].remove(i);
+			board[nx][ny].add(i);
 			temp.x = nx;
 			temp.y = ny;
 		}
