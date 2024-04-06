@@ -61,32 +61,21 @@ public class Main {
 		for(int i=0;i<size;i++) {
 			for(int j=0;j<size;j++) {
 				arr[j][size-i-1] = board[i][j];
-			}
-		}
-		
-		x = 0;
-		y = N/2+1;
-		for(int i=0;i<size;i++) {
-			for(int j=0;j<size;j++) {
+				
+				x = 0;
+				y = N/2+1;
 				arr[j][N-1-i] = board[x+i][y+j];
-			}
-		}
-		
-		x = N/2+1;
-		y = 0;
-		for(int i=0;i<size;i++) {
-			for(int j=0;j<size;j++) {
+
+				x = N/2+1;
+				y = 0;
 				arr[x+j][size-i-1] = board[x+i][y+j];
+
+				x = N/2+1;
+				y = N/2+1;
+				arr[x+j][N-1-i] = board[x+i][y+j];				
 			}
 		}
-		
-		x = N/2+1;
-		y = N/2+1;
-		for(int i=0;i<size;i++) {
-			for(int j=0;j<size;j++) {
-				arr[x+j][N-1-i] = board[x+i][y+j];
-			}
-		}
+
 		board = arr;
 	}
 
