@@ -128,7 +128,7 @@ public class Main {
 		count = -1;
 		direction = "";
 		isChecked = new boolean[5];
-		perm(0, "");
+		perm(0,px,py, "");
 		
 		// 이때 이동할 때 이동하는 칸에 있는 몬스터는 모두 먹어치운 뒤, 그 자리에 몬스터의 시체를 남깁니다.
 		// 이때 팩맨은 알은 먹지 않으며, 움직이기 전에 함께 있었던 몬스터도 먹지 않습니다. 즉, 이동하는 과정에 있는 몬스터만 먹습니다.
@@ -159,7 +159,7 @@ public class Main {
 	
 	static boolean[] isChecked;
 	
-	private static void perm(int idx, String dir) {
+	private static void perm(int idx, int x, int y, String dir) {
 		
 		if(idx == 3) {
 			int cnt = 0;
@@ -188,9 +188,10 @@ public class Main {
 		}
 		
 		for(int i=1;i<=4;i++) {
-			isChecked[i] = true;
-			perm(idx+1, dir+""+i);
-			isChecked[i] = false;
+			int nx = x + ddx[i];
+			int ny = y + ddy[i];
+			if(isValid(nx, ny))
+				perm(idx+1,nx,ny, dir+""+i);
 		}
 	}
 
