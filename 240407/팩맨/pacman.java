@@ -76,16 +76,11 @@ public class Main {
 			// 3. 팩맨 이동
 			movePackMan();
 
-			// 4. 몬스터 시체 소멸
-			for(int i=0;i<4;i++) {
-				for(int j=0;j<4;j++) {
-					if(dead[i][j]>0) dead[i][j]--;
-				}
-			}
-			
+			// 4. 몬스터 시체 소멸			
 			// 5. 몬스터 복제 완성
 			for(int i=0;i<4;i++) {
 				for(int j=0;j<4;j++) {
+					if(dead[i][j]>0) dead[i][j]--;
 					if(copy[i][j].size() > 0) {
 						while(!copy[i][j].isEmpty()) {
 							Monster temp = copy[i][j].poll();
@@ -97,11 +92,12 @@ public class Main {
 			}
 		}
 		
-		for(int i=0;i<4;i++) {
-			for(int j=0;j<4;j++) {
-				result += board[i][j].size();
-			}
-		}
+        result = mList.size();
+		// for(int i=0;i<4;i++) {
+		// 	for(int j=0;j<4;j++) {
+		// 		result += board[i][j].size();
+		// 	}
+		// }
 	}
 	
 	static class Point {
