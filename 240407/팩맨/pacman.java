@@ -223,7 +223,10 @@ public class Main {
 				if(cnt > 8) break;
 			}
 			
-			renewal.add(new Monster(nx, ny, d));
+			if(isValid(nx, ny) && dead[nx][ny] == 0 && !(nx == px && ny == py))
+				renewal.add(new Monster(nx, ny, d));
+			else
+				renewal.add(new Monster(temp.x,temp.y,temp.d));
 		}
 		
 		board = new LinkedList[4][4];
