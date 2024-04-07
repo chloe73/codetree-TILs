@@ -66,7 +66,6 @@ public class Main {
 	private static void solve() {
 		
 		while(T-- > 0) {
-
 			// 1. 몬스터 복제 시도
 			copyMonster();
 			
@@ -75,7 +74,7 @@ public class Main {
 
 			// 3. 팩맨 이동
 			movePackMan();
-
+			
 			// 4. 몬스터 시체 소멸			
 			// 5. 몬스터 복제 완성
 			for(int i=0;i<4;i++) {
@@ -93,11 +92,6 @@ public class Main {
 		}
 		
         result = mList.size();
-		// for(int i=0;i<4;i++) {
-		// 	for(int j=0;j<4;j++) {
-		// 		result += board[i][j].size();
-		// 	}
-		// }
 	}
 	
 	static class Point {
@@ -200,6 +194,7 @@ public class Main {
 		ArrayList<Monster> renewal = new ArrayList<>();
 		
 		for(Monster temp : mList) {
+			board[temp.x][temp.y].clear();
 			int nx = temp.x + dx[temp.d];
 			int ny = temp.y + dy[temp.d];
 			int d = temp.d;
@@ -226,13 +221,6 @@ public class Main {
 				renewal.add(new Monster(temp.x,temp.y,temp.d));
 		}
 		
-		board = new LinkedList[4][4];
-		for(int i=0;i<4;i++) {
-			for(int j=0;j<4;j++) {
-				board[i][j] = new LinkedList<>();
-			}
-		}
-		
 		for(Monster m : renewal) {
 			board[m.x][m.y].add(new Monster(m.x, m.y, m.d));
 		}
@@ -242,12 +230,12 @@ public class Main {
 
 	private static void copyMonster() {
 		
-		// copy = new LinkedList[4][4];
-		// for(int i=0;i<4;i++) {
-		// 	for(int j=0;j<4;j++) {
-		// 		copy[i][j] = new LinkedList<>();
-		// 	}
-		// }
+		copy = new LinkedList[4][4];
+		for(int i=0;i<4;i++) {
+			for(int j=0;j<4;j++) {
+				copy[i][j] = new LinkedList<>();
+			}
+		}
 		
 		for(Monster m : mList) {
 			copy[m.x][m.y].add(new Monster(m.x, m.y, m.d));
