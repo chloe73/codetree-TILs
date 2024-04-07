@@ -245,12 +245,12 @@ public class Main {
 
 	private static void copyMonster() {
 		
-		copy = new LinkedList[4][4];
-		for(int i=0;i<4;i++) {
-			for(int j=0;j<4;j++) {
-				copy[i][j] = new LinkedList<>();
-			}
-		}
+		// copy = new LinkedList[4][4];
+		// for(int i=0;i<4;i++) {
+		// 	for(int j=0;j<4;j++) {
+		// 		copy[i][j] = new LinkedList<>();
+		// 	}
+		// }
 		
 		for(Monster m : mList) {
 			copy[m.x][m.y].add(new Monster(m.x, m.y, m.d));
