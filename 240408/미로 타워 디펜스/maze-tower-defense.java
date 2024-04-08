@@ -52,6 +52,19 @@ public class Main {
 		
 		System.out.println(result);
 	}
+	
+	private static void print() {
+		for(int i=0;i<N;i++) {
+			for(int j=0;j<N;j++) {
+				if(board[i][j] < mList.size()) {
+					System.out.print(mList.get(board[i][j])+"\t");
+				}
+				else
+					System.out.print(0+"\t");
+			}
+			System.out.println();
+		}
+	}
 
 	private static void attack(int d, int p) {
 		int x = N/2;
@@ -71,7 +84,12 @@ public class Main {
 			else break;
 			
 			// 플레이어는 상하좌우 방향 중 주어진 공격 칸 수만큼 몬스터를 공격하여 없앨 수 있습니다.
-
+//			if(arr[x][y] > 0) {
+//				// 몬스터 번호만큼 점수 획득
+//				result += arr[x][y];
+//				arr[x][y] = 0;
+//				removeList.add(board[x][y]);
+//			}
 		}
 		
 		// 비어있는 공간만큼 몬스터는 앞으로 이동하여 빈 공간을 채웁니다.
@@ -104,6 +122,11 @@ public class Main {
 					cnt++;
 					continue;
 				}
+			}
+			
+			if(cnt >= 4) {
+				rList.add(new int[] {start,mList.size()-1});
+				result += (cnt * num);
 			}
 			
 			if(rList.size() > 0) {
@@ -164,6 +187,8 @@ public class Main {
 			}
 		}
 		
+		if(cnt >= 4) return true;
+		
 		return false;
 	}
 	
@@ -215,7 +240,17 @@ public class Main {
 			if(d == 3) d = 0;
 			else d++;
 		}
-
+//		System.out.println();
+//		for(int i=0;i<N;i++) {
+//			for(int j=0;j<N;j++) {
+//				System.out.print(board[i][j] + "\t");
+//			}
+//			System.out.println();
+//		}
+//		
+//		for(int i=0;i<mList.size();i++) {
+//			System.out.println(i+"번째 몬스터 : "+mList.get(i).x+", "+mList.get(i).y+", "+mList.get(i).num);
+//		}
 	}
 
 	private static boolean isValid(int r, int c) {
