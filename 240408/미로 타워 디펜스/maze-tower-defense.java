@@ -27,6 +27,7 @@ public class Main {
 		
 		N = Integer.parseInt(st.nextToken());
 		M = Integer.parseInt(st.nextToken());
+		double before = System.currentTimeMillis();
 		
 		arr = new int[N][N];
 		for(int i=0;i<N;i++) {
@@ -49,7 +50,7 @@ public class Main {
 			
 			attack(d,p);
 		} // input end
-		
+
 		System.out.println(result);
 	}
 
@@ -71,19 +72,13 @@ public class Main {
 			else break;
 			
 			// 플레이어는 상하좌우 방향 중 주어진 공격 칸 수만큼 몬스터를 공격하여 없앨 수 있습니다.
-//			if(arr[x][y] > 0) {
-//				// 몬스터 번호만큼 점수 획득
-//				result += arr[x][y];
-//				arr[x][y] = 0;
-//				removeList.add(board[x][y]);
-//			}
 		}
 		
 		// 비어있는 공간만큼 몬스터는 앞으로 이동하여 빈 공간을 채웁니다.
 		stick_monster(removeList);
 		
 		// 이때 몬스터의 종류가 4번 이상 반복하여 나오면 해당 몬스터 또한 삭제됩니다. 해당 몬스터들은 동시에 사라집니다.
-		while(check_monster()) {
+		while(true) {
 			ArrayList<int[]> rList = new ArrayList<>();
 			int cnt = 1;
 			int num = mList.get(1);
@@ -115,6 +110,8 @@ public class Main {
 				rList.add(new int[] {start,mList.size()-1});
 				result += (cnt * num);
 			}
+			
+			if(rList.size() == 0) break;
 			
 			if(rList.size() > 0) {
 				int count = 0;
@@ -158,27 +155,6 @@ public class Main {
 		mList = renewal;
 	}
 	
-	private static boolean check_monster() {
-		
-		int cnt = 1;
-		int num = mList.get(1);
-		for(int i=2;i<mList.size();i++) {
-			if(cnt == 4) return true;
-			if(num == mList.get(i)) {
-				cnt++;
-				continue;
-			}
-			if(num != mList.get(i)) {
-				cnt = 1;
-				num = mList.get(i);
-			}
-		}
-		
-		if(cnt >= 4) return true;
-		
-		return false;
-	}
-	
 	private static void stick_monster(ArrayList<Integer> list) {
 		
 		int cnt = 0;
@@ -186,7 +162,6 @@ public class Main {
 			mList.remove(i-cnt);
 			cnt++;
 		}
-		
 	}
 
 	private static void make_snail() {
