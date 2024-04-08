@@ -10,7 +10,7 @@ public class Main {
 	static int[][] board,arr;
 	static int[] dx = {0,1,0,-1};
 	static int[] dy = {1,0,-1,0};
-	static ArrayList<int[]> locationList;
+//	static ArrayList<int[]> locationList;
 	static ArrayList<Integer> mList;
 	static class Monster {
 		int x,y,num;
@@ -38,7 +38,7 @@ public class Main {
 
 		board = new int[N][N];
 		mList = new ArrayList<>();
-		locationList = new ArrayList<>();
+//		locationList = new ArrayList<>();
 		make_snail();
 
 		for(int i=0;i<M;i++) {
@@ -51,19 +51,6 @@ public class Main {
 		} // input end
 		
 		System.out.println(result);
-	}
-	
-	private static void print() {
-		for(int i=0;i<N;i++) {
-			for(int j=0;j<N;j++) {
-				if(board[i][j] < mList.size()) {
-					System.out.print(mList.get(board[i][j])+"\t");
-				}
-				else
-					System.out.print(0+"\t");
-			}
-			System.out.println();
-		}
 	}
 
 	private static void attack(int d, int p) {
@@ -212,7 +199,7 @@ public class Main {
 		int[] ddx = {0,1,0,-1};
 		int[] ddy = {-1,0,1,0};
 		mList.add(0);
-		locationList.add(new int[] {x,y});
+//		locationList.add(new int[] {x,y});
 		
 		outer:while(true) {
 			if(x == 0 && y == 0) break;
@@ -222,7 +209,7 @@ public class Main {
 				y += ddy[d];
 				if(arr[x][y] > 0)
 					mList.add(arr[x][y]);
-				locationList.add(new int[] {x,y});
+//				locationList.add(new int[] {x,y});
 
 				if(x == 0 && y == 0) {
 					board[x][y] = num;
@@ -240,17 +227,7 @@ public class Main {
 			if(d == 3) d = 0;
 			else d++;
 		}
-//		System.out.println();
-//		for(int i=0;i<N;i++) {
-//			for(int j=0;j<N;j++) {
-//				System.out.print(board[i][j] + "\t");
-//			}
-//			System.out.println();
-//		}
-//		
-//		for(int i=0;i<mList.size();i++) {
-//			System.out.println(i+"번째 몬스터 : "+mList.get(i).x+", "+mList.get(i).y+", "+mList.get(i).num);
-//		}
+
 	}
 
 	private static boolean isValid(int r, int c) {
