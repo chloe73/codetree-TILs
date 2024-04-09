@@ -28,6 +28,7 @@ public class Main {
 			this.damage = damage;
 			this.isDead = isDead;
 		}
+		
 	}
 
 	public static void main(String[] args) throws IOException{
@@ -46,7 +47,10 @@ public class Main {
 				board[i][j] = Integer.parseInt(st.nextToken());
 			}
 		}
-
+//		0이라면 빈칸을 의미합니다.
+//		1이라면 함정을 의미합니다.
+//		2라면 벽을 의미합니다.
+		
 		kMap = new TreeMap<>();
 		for(int i=1;i<=N;i++) {
 			st = new StringTokenizer(br.readLine());
@@ -95,13 +99,10 @@ public class Main {
 		Queue<Integer> q = new LinkedList<>();
 		boolean isMovable = true;
 		int[][] renewalKBoard = new int[L][L];
-		for(int x=0;x<L;x++) {
-			renewalKBoard[x] = Arrays.copyOf(kBoard[x], L);
-		}
-
+		
 		Knight temp = kMap.get(idx);
 		boolean[] isChecked = new boolean[kMap.size()+1];
-        isChecked[idx] = true;
+		isChecked[idx] = true;
 		outer:for(int x=temp.x;x<temp.x+temp.h;x++) {
 			for(int y=temp.y;y<temp.y+temp.w;y++) {
 				int nx = x + dx[d];
@@ -115,7 +116,7 @@ public class Main {
 				
 				// 이때 만약 이동하려는 위치에 다른 기사가 있다면 그 기사도 함께 연쇄적으로 한 칸 밀려나게 됩니다. 
 				// 그 옆에 또 기사가 있다면 연쇄적으로 한 칸씩 밀리게 됩니다.
-				if(kBoard[nx][ny] > 0 && kBoard[nx][ny] != idx && !isChecked[kBoard[nx][ny]]) {
+				if(kBoard[nx][ny] > 0 && !isChecked[kBoard[nx][ny]]) {
 					isChecked[kBoard[nx][ny]] = true;
 					q.add(kBoard[nx][ny]);
 				}
@@ -160,7 +161,7 @@ public class Main {
 							
 							// 이때 만약 이동하려는 위치에 다른 기사가 있다면 그 기사도 함께 연쇄적으로 한 칸 밀려나게 됩니다. 
 							// 그 옆에 또 기사가 있다면 연쇄적으로 한 칸씩 밀리게 됩니다.
-							if(kBoard[nx][ny] > 0 && !isChecked[kBoard[nx][ny]]) {
+							if(kBoard[nx][ny] > 0 && kBoard[nx][ny] != num && !isChecked[kBoard[nx][ny]]) {
 								isChecked[kBoard[nx][ny]] = true;
 								q.add(kBoard[nx][ny]);
 							}
@@ -170,7 +171,6 @@ public class Main {
 								damageNum[num]++;
 							}
 							
-							renewalKBoard[nx][ny] = num;
 						}
 					}
 					
@@ -185,16 +185,18 @@ public class Main {
 		kMap.get(i).y += dy[d];
 
 		for(int index=1;index<=kMap.size();index++) {
+			if(index == i) continue; 
 			if(damageNum[index] > 0) {
 				if(kMap.get(index).k - damageNum[index] <= 0) {
 					kMap.get(index).isDead = true;
 					kMap.get(index).x += dx[d];
 					kMap.get(index).y += dy[d];
-					for(int x=kMap.get(index).x;x<kMap.get(index).x+kMap.get(index).h;x++) {
-						for(int y=kMap.get(index).y;y<kMap.get(index).y+kMap.get(index).w;y++) {
-							renewalKBoard[x][y] = 0;
-						}
-					}
+					isChecked[index] = false;
+//					for(int x=kMap.get(index).x;x<kMap.get(index).x+kMap.get(index).h;x++) {
+//						for(int y=kMap.get(index).y;y<kMap.get(index).y+kMap.get(index).w;y++) {
+//							renewalKBoard[x][y] = 0;
+//						}
+//					}
 				}
 				else {
 					kMap.get(index).x += dx[d];
@@ -205,6 +207,26 @@ public class Main {
 			}
 		}
 		
+		for(int index=1;index<=kMap.size();index++) {
+			if(index == i) continue;
+			if(!isChecked[index] && kMap.get(index).isDead) continue;
+			if(isChecked[index] && !kMap.get(index).isDead) {
+				Knight tmp = kMap.get(index);
+				for(int x=tmp.x;x<tmp.x+tmp.h;x++) {
+					for(int y=tmp.y;y<tmp.y+tmp.w;y++) {
+						renewalKBoard[x][y] = index;
+					}
+				}
+			}
+			if(!isChecked[index] && !kMap.get(index).isDead) {
+				Knight tmp = kMap.get(index);
+				for(int x=tmp.x;x<tmp.x+tmp.h;x++) {
+					for(int y=tmp.y;y<tmp.y+tmp.w;y++) {
+						renewalKBoard[x][y] = index;
+					}
+				}
+			}
+		}
 		kBoard = renewalKBoard;
 	}
 	
