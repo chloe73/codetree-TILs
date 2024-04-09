@@ -1,9 +1,11 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.Stack;
 import java.util.StringTokenizer;
 import java.util.TreeMap;
 
@@ -136,16 +138,19 @@ public class Main {
 		// 단, 명령을 받은 기사는 피해를 입지 않으며, 기사들은 모두 밀린 이후에 대미지를 입게 됩니다.
 		// 밀렸더라도 밀쳐진 위치에 함정이 전혀 없다면 그 기사는 피해를 전혀 입지 않게 됨에 유의합니다.
 
+		Stack<ArrayList<Integer>> stack = new Stack<>();
 		if(q.size() > 0) {
 			
 			outer:while(!q.isEmpty()) {
 				
+				ArrayList<Integer> list = new ArrayList<>();
 				int size = q.size();
 				//isChecked = new boolean[kMap.size()+1];
 				
 				// 현재 q 사이즈 만큼 연쇄되는 기사들 확인
 				for(int a=0;a<size;a++) {
 					int num = q.poll();
+					list.add(num);
 					Knight next = kMap.get(num);
 					
 					for(int x=next.x;x<next.x+next.h;x++) {
@@ -175,6 +180,8 @@ public class Main {
 					}
 					
 				}
+				
+				stack.add(list);
 			}
 			
 		}
@@ -186,31 +193,31 @@ public class Main {
 
 		for(int index=1;index<=kMap.size();index++) {
 			if(index == i) continue; 
+			
 			if(damageNum[index] > 0) {
 				if(kMap.get(index).k - damageNum[index] <= 0) {
 					kMap.get(index).isDead = true;
 					kMap.get(index).x += dx[d];
 					kMap.get(index).y += dy[d];
 					isChecked[index] = false;
+					continue;
 //					for(int x=kMap.get(index).x;x<kMap.get(index).x+kMap.get(index).h;x++) {
 //						for(int y=kMap.get(index).y;y<kMap.get(index).y+kMap.get(index).w;y++) {
 //							renewalKBoard[x][y] = 0;
 //						}
 //					}
 				}
-				else {
-					kMap.get(index).x += dx[d];
-					kMap.get(index).y += dy[d];
-					kMap.get(index).damage += damageNum[index];
-					kMap.get(index).k -= damageNum[index];
-				}
+				
 			}
-		}
-		
-		for(int index=1;index<=kMap.size();index++) {
-			if(index == i) continue;
-			if(!isChecked[index] && kMap.get(index).isDead) continue;
-			if(isChecked[index] && !kMap.get(index).isDead) {
+			
+			if(isChecked[index] && kMap.get(index).k - damageNum[index] > 0) {
+				kMap.get(index).x += dx[d];
+				kMap.get(index).y += dy[d];
+				kMap.get(index).damage += damageNum[index];
+				kMap.get(index).k -= damageNum[index];				
+			}
+
+			if(!isChecked[index] && !kMap.get(index).isDead) {
 				Knight tmp = kMap.get(index);
 				for(int x=tmp.x;x<tmp.x+tmp.h;x++) {
 					for(int y=tmp.y;y<tmp.y+tmp.w;y++) {
@@ -218,7 +225,12 @@ public class Main {
 					}
 				}
 			}
-			if(!isChecked[index] && !kMap.get(index).isDead) {
+		}
+		
+		while(!stack.isEmpty()) {
+			ArrayList<Integer> list = stack.pop();
+			
+			for(int index : list) {
 				Knight tmp = kMap.get(index);
 				for(int x=tmp.x;x<tmp.x+tmp.h;x++) {
 					for(int y=tmp.y;y<tmp.y+tmp.w;y++) {
